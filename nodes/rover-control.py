@@ -34,7 +34,8 @@ def robotCommThread():
     speed2Send = speed + 50
     steeringAngle2Send = steeringAngle + 50
     
-    command = "DIS%03d" % (distance)
+    
+    command = "STR%03d" % (steeringAngle2Send)
     ser.write(b"%s\r\n" % command.encode('ascii','ignore'))
     
     time.sleep(0.01)
@@ -44,8 +45,9 @@ def robotCommThread():
     
     time.sleep(0.01)
     
-    command = "STR%03d" % (steeringAngle2Send)
+    command = "DIS%03d" % (distance)
     ser.write(b"%s\r\n" % command.encode('ascii','ignore'))
+    
     
 
 
@@ -73,6 +75,9 @@ ser.close()
 ser.open()
 ser.isOpen()
 
+ser.write(b"SRE\r\n")
+time.sleep(0.1)
+
 rospy.init_node('rover_control_node', anonymous=True)
 rospy.Subscriber('driver_control', Int16MultiArray, setSpeeds)
 
@@ -81,3 +86,4 @@ commThread.start()
 
 input("Press any key to exit!")
 commThread.exit()
+ser.write(b"SRD\r\n")
